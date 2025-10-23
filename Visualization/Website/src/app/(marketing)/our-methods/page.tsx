@@ -1,17 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
-import Link from "next/link";
+import type { ReactNode } from "react";
 import Header from "../../../components/Header";
-import { Badge } from "../../../components/ui/badge";
-import { Button } from "../../../components/ui/button";
 import { TooltipProvider } from "../../../components/ui/tooltip";
-import { Separator } from "../../../components/ui/separator";
 import { StatCard } from "../../../components/our-methods/StatCard";
 import { ImageCard } from "../../../components/our-methods/ImageCard";
 import { ChartCard } from "../../../components/our-methods/ChartCard";
 import { RuleTable } from "../../../components/our-methods/RuleTable";
 import { CtaRow } from "../../../components/our-methods/CtaRow";
-import { Card, CardContent } from "../../../components/ui/card";
+import { Card, CardContent, CardHeader } from "../../../components/ui/card";
+import { cn } from "../../../lib/utils";
 
 const VARIABLE_CARDS = [
   {
@@ -146,105 +144,133 @@ export default function OurMethodsPage() {
       <main className="min-h-screen bg-[radial-gradient(ellipse_at_top,rgba(54,78,126,0.6),transparent_60%)]">
         <div className="mx-auto w-full max-w-4xl px-6 py-10 sm:px-10 sm:py-14 lg:px-12 lg:py-16">
           <Header />
+          <div className="mt-14 space-y-12">
+            <SectionCard
+              align="center"
+              eyebrow="Method Overview"
+              title="Our Methods"
+              description="A structured look at the filters, evidence, and datasets behind our search for Earth-like planets."
+            />
 
-          <section className="mt-14 space-y-5 text-center">
-            
-            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Our Methods</h1>
-            
-            <div className="flex flex-wrap items-center justify-center gap-3">
-            
-            </div>
-          </section>
-
-          <Separator className="my-14" />
-
-          <section className="space-y-7">
-           
-            <div className="grid gap-5 md:grid-cols-2">
-              {VARIABLE_CARDS.map((card) => (
-                <StatCard key={card.code} {...card} />
-              ))}
-            </div>
-          </section>
-
-          <section className="mt-16 space-y-7">
-            <div className="space-y-2 text-center">
-              <p className="text-xs uppercase tracking-[0.35em] text-indigo-200">Evidence &amp; Visualization</p>
-              <h2 className="text-2xl font-semibold text-white sm:text-[1.85rem]">What the Data Looks Like</h2>
-            </div>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {HISTOGRAMS.map((item) => (
-                <ImageCard key={item.caption} {...item} />
-              ))}
-            </div>
-          </section>
-
-          {SUPPLEMENTAL_GRAPHS.length > 0 ? (
-            <section className="mt-16 space-y-7">
-              <div className="space-y-2 text-center">
-                <p className="text-xs uppercase tracking-[0.35em] text-indigo-200">Notebook Exports</p>
-                <h2 className="text-2xl font-semibold text-white sm:text-[1.85rem]">Supplementary Graph Gallery</h2>
-                <p className="mx-auto max-w-2xl text-sm text-slate-300">
-                  These images are read directly from <code className="rounded bg-white/5 px-1.5 py-0.5 text-[0.75rem] text-white/90">/public/graphs</code>. Drop fresh renders from your notebooks to keep this appendix current.
-                </p>
-              </div>
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {SUPPLEMENTAL_GRAPHS.map((graph) => (
-                  <ImageCard key={graph.src} {...graph} />
+            <SectionCard
+              eyebrow="Key Variables"
+              title="Habitability Screening Factors"
+              description="Each threshold keeps candidate worlds inside a life-friendly band before we continue modeling."
+            >
+              <div className="grid gap-5 md:grid-cols-2">
+                {VARIABLE_CARDS.map((card) => (
+                  <StatCard key={card.code} {...card} />
                 ))}
               </div>
-            </section>
-          ) : null}
+            </SectionCard>
 
-          <section className="mt-16 space-y-7">
-            <div className="space-y-2 text-center">
-              <p className="text-xs uppercase tracking-[0.35em] text-indigo-200">Public Charts</p>
-              <h2 className="text-2xl font-semibold text-white sm:text-[1.85rem]">Shared Chart Library</h2>
-              
-            </div>
-            {PUBLIC_CHARTS.length > 0 ? (
+            <SectionCard
+              align="center"
+              eyebrow="Evidence &amp; Visualization"
+              title="What the Data Looks Like"
+            >
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {PUBLIC_CHARTS.map((chart) => (
-                  <ChartCard key={chart.src} {...chart} />
+                {HISTOGRAMS.map((item) => (
+                  <ImageCard key={item.caption} {...item} />
                 ))}
               </div>
-            ) : (
-              <Card className="border-white/10 bg-white/[0.03]">
-                <CardContent className="py-8 text-center text-sm text-slate-300">
+            </SectionCard>
+
+            {SUPPLEMENTAL_GRAPHS.length > 0 ? (
+              <SectionCard
+                align="center"
+                eyebrow="Notebook Exports"
+                title="Supplementary Graph Gallery"
+                description={(
+                  <span>
+                    These images are read directly from <code className="rounded bg-white/5 px-1.5 py-0.5 text-[0.75rem] text-white/90">/public/graphs</code>. Drop fresh renders from your notebooks to keep this appendix current.
+                  </span>
+                )}
+              >
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {SUPPLEMENTAL_GRAPHS.map((graph) => (
+                    <ImageCard key={graph.src} {...graph} />
+                  ))}
+                </div>
+              </SectionCard>
+            ) : null}
+
+            <SectionCard
+              align="center"
+              eyebrow="Public Charts"
+              title="Shared Chart Library"
+            >
+              {PUBLIC_CHARTS.length > 0 ? (
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {PUBLIC_CHARTS.map((chart) => (
+                    <ChartCard key={chart.src} {...chart} />
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.02] px-6 py-10 text-sm text-slate-300">
                   No charts found yet. Add PNG, JPG, GIF, or WebP files to <code className="rounded bg-white/5 px-1.5 py-0.5 text-[0.75rem] text-white/90">/public/charts</code> and they will appear here automatically.
-                </CardContent>
-              </Card>
-            )}
-          </section>
+                </div>
+              )}
+            </SectionCard>
 
-          <section className="mt-16 space-y-7">
-            <div className="space-y-2 text-center">
-              <p className="text-xs uppercase tracking-[0.35em] text-indigo-200">Ground Rules</p>
-              <h2 className="text-2xl font-semibold text-white sm:text-[1.85rem]">Our Screening Rules</h2>
-            </div>
-            <RuleTable rows={RULE_ROWS} />
-          </section>
+            <SectionCard eyebrow="Ground Rules" title="Our Screening Rules">
+              <RuleTable rows={RULE_ROWS} />
+            </SectionCard>
 
-      
-
-          <section className="mt-16 space-y-6">
-            <div className="text-center">
-              <p className="text-xs uppercase tracking-[0.35em] text-indigo-200">Take the Next Step</p>
-              <h2 className="text-2xl font-semibold text-white sm:text-[1.85rem]">Ready to Dive Deeper?</h2>
-            </div>
-            <CtaRow hasSelectedCsv={hasSelectedCsv} hasRawCsv={hasRawCsv} />
-          </section>
-
-          <section className="mt-16">
-            <Card className="border-white/10 bg-white/[0.02]">
-              <CardContent className="space-y-4 pt-6 text-center">
-               
-              </CardContent>
-            </Card>
-          </section>
+            <SectionCard align="center" eyebrow="Take the Next Step" title="Ready to Dive Deeper?">
+              <CtaRow hasSelectedCsv={hasSelectedCsv} hasRawCsv={hasRawCsv} />
+            </SectionCard>
+          </div>
         </div>
       </main>
     </TooltipProvider>
+  );
+}
+
+type SectionCardProps = {
+  eyebrow?: string;
+  title?: string;
+  description?: ReactNode;
+  align?: "start" | "center";
+  className?: string;
+  contentClassName?: string;
+  children?: ReactNode;
+};
+
+function SectionCard({
+  eyebrow,
+  title,
+  description,
+  align = "start",
+  className,
+  contentClassName,
+  children,
+}: SectionCardProps) {
+  const hasContent = children !== undefined && children !== null;
+  const headerAlignment = align === "center" ? "items-center text-center" : "text-left";
+  const descriptionAlignment = align === "center" ? "mx-auto max-w-2xl text-center" : undefined;
+
+  return (
+    <section className={className}>
+      <Card className="border-white/15 bg-white/[0.035] shadow-[0_30px_80px_rgba(15,23,42,0.35)] backdrop-blur-xl">
+        <CardHeader className={cn("space-y-3 sm:p-6", headerAlignment)}>
+          {eyebrow ? (
+            <p className="text-xs uppercase tracking-[0.35em] text-indigo-200">{eyebrow}</p>
+          ) : null}
+          {title ? (
+            <h2 className="text-2xl font-semibold text-white sm:text-[1.85rem]">{title}</h2>
+          ) : null}
+          {description ? (
+            <p className={cn("text-sm leading-relaxed text-slate-300", descriptionAlignment)}>{description}</p>
+          ) : null}
+        </CardHeader>
+        {hasContent ? (
+          <CardContent className={cn("space-y-6 pt-0 sm:px-6 sm:pb-6", contentClassName)}>
+            {children}
+          </CardContent>
+        ) : null}
+      </Card>
+    </section>
   );
 }
 

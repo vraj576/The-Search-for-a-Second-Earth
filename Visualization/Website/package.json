@@ -24,18 +24,18 @@
     "autoprefixer": "^10.4.21",
     "framer-motion": "^12.23.16",
     "next": "^14.2.11",
-    "postcss": "^8.5.6",
     "plotly.js": "^2.35.2",
-    "recharts": "^2.12.7",
+    "postcss": "^8.5.6",
     "react": "^18.3.1",
-    "react-plotly.js": "^2.6.0",
     "react-dom": "^18.3.1",
+    "react-plotly.js": "^2.6.0",
+    "recharts": "^2.12.7",
     "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
-    "@types/node": "^20.12.12",
-    "@types/react": "^18.3.4",
+    "@types/node": "20.19.23",
+    "@types/react": "18.3.26",
     "@types/react-dom": "^18.3.0",
-    "typescript": "^5.4.0"
+    "typescript": "5.9.3"
   }
 }

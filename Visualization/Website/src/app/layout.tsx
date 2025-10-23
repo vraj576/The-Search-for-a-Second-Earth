@@ -1,6 +1,11 @@
 export const metadata = {
   title: 'The Search for the Second Earth',
   description: 'Space exploration and exoplanet discovery project',
+  icons: {
+    icon: '/image.png',
+    shortcut: '/image.png',
+    apple: '/image.png',
+  },
 };
 
 import './globals.css';
