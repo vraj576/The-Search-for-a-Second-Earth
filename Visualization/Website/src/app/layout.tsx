@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
           <footer className="border-t border-white/10 text-sm text-slate-400 text-center py-8">
             <div className="max-w-6xl mx-auto px-6">
-              <p>Made by Jason, Aneesh, Josh and Vraj</p>
+              <p>Made by Jason Charwin</p>
             </div>
           </footer>
         </div>

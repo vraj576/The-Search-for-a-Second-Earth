@@ -12,28 +12,30 @@ type RuleTableProps = {
 
 export function RuleTable({ rows }: RuleTableProps) {
   return (
-    <div className="space-y-4">
-      <p className="text-sm text-slate-300">
-        We label each planet per variable using conservative thresholds; medians/percentiles are computed per planet when multiple rows exist.
-      </p>
-      <Table className="rounded-xl border border-white/10 bg-white/[0.03]">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Variable</TableHead>
-            <TableHead className="text-right">Pass (True)</TableHead>
-            <TableHead className="text-right">Fail (False)</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.variable}>
-              <TableCell className="font-medium text-white">{row.variable}</TableCell>
-              <TableCell className="text-right font-semibold text-emerald-300">{row.pass}</TableCell>
-              <TableCell className="text-right text-rose-300">{row.fail}</TableCell>
+    <div className="space-y-6">
+      <div className="overflow-x-auto">
+        <Table className="w-full rounded-lg border border-white/10 bg-white/[0.03] overflow-hidden">
+          <TableHeader>
+            <TableRow className="border-b border-white/10">
+              <TableHead className="font-semibold text-slate-200 py-4 px-4">Variable</TableHead>
+              <TableHead className="text-right font-semibold text-slate-200 py-4 px-4">Pass</TableHead>
+              <TableHead className="text-right font-semibold text-slate-200 py-4 px-4">Fail</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {rows.map((row, idx) => (
+              <TableRow 
+                key={row.variable} 
+                className={idx !== rows.length - 1 ? "border-b border-white/5" : ""}
+              >
+                <TableCell className="font-medium text-white py-4 px-4">{row.variable}</TableCell>
+                <TableCell className="text-right font-semibold text-emerald-400 py-4 px-4">{row.pass}</TableCell>
+                <TableCell className="text-right font-medium text-rose-400 py-4 px-4">{row.fail}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

@@ -44,28 +44,28 @@ export function StatCard({ name, code, description, units, range, rationale, cla
         }}
       />
       <Card className="relative flex h-full flex-col justify-between overflow-hidden border-white/10 bg-white/[0.04] backdrop-blur-sm">
-        <CardHeader className="space-y-3 pb-0">
-          <div className="flex items-baseline justify-between gap-2">
-            <h3 className="text-lg font-semibold text-white">{name}</h3>
-            <Badge className="bg-indigo-500/20 text-indigo-100">{code}</Badge>
+        <CardHeader className="space-y-4 pb-0 p-5">
+          <div className="flex items-baseline justify-between gap-3">
+            <h3 className="text-lg font-bold text-white leading-tight">{name}</h3>
+            <Badge className="bg-indigo-500/20 text-indigo-200 text-xs font-medium px-2 py-1">{code}</Badge>
           </div>
-          <p className="text-sm leading-relaxed text-slate-300">{description}</p>
+          <p className="text-base text-slate-300 leading-7">{description}</p>
         </CardHeader>
-        <CardContent className="mt-4 flex flex-col gap-3">
-          <div className="flex flex-wrap items-center gap-4 text-sm">
-            <div className="flex items-center gap-2 text-slate-300">
-              <span className="text-xs uppercase tracking-wide text-slate-400">Units</span>
-              <Badge className="bg-white/10 text-white">{units}</Badge>
+        <CardContent className="mt-2 flex flex-col gap-4 p-5 pt-0">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-xs uppercase tracking-wide text-slate-400 font-medium">Units</span>
+              <Badge className="bg-white/10 text-white text-xs px-2 py-1">{units}</Badge>
             </div>
             <Tooltip>
               <TooltipTrigger>
-                <div className="flex cursor-help items-center gap-2 text-slate-300">
-                  <span className="text-xs uppercase tracking-wide text-slate-400">Range</span>
-                  <Badge className="bg-indigo-500/20 text-indigo-100">{range}</Badge>
+                <div className="flex cursor-help items-center gap-2">
+                  <span className="text-xs uppercase tracking-wide text-slate-400 font-medium">Range</span>
+                  <Badge className="bg-indigo-500/20 text-indigo-200 text-xs px-2 py-1">{range}</Badge>
                 </div>
               </TooltipTrigger>
-              <TooltipContent className="max-w-xs text-justify" side="top">
-                {rationale}
+              <TooltipContent className="max-w-sm text-sm leading-6" side="top">
+                <p>{rationale}</p>
               </TooltipContent>
             </Tooltip>
           </div>

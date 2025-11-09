@@ -1,22 +1,16 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { ReactNode } from "react";
 import Header from "../../../components/Header";
 import { TooltipProvider } from "../../../components/ui/tooltip";
-import { StatCard } from "../../../components/our-methods/StatCard";
-import { ImageCard } from "../../../components/our-methods/ImageCard";
-import { ChartCard } from "../../../components/our-methods/ChartCard";
-import { RuleTable } from "../../../components/our-methods/RuleTable";
 import { CtaRow } from "../../../components/our-methods/CtaRow";
-import { Card, CardContent, CardHeader } from "../../../components/ui/card";
-import { cn } from "../../../lib/utils";
+import { ImageCardWithError } from "../../../components/our-methods/ImageCardWithError";
 
 const VARIABLE_CARDS = [
   {
     name: "Planetary Radius",
     code: "pl_rade",
     description:
-      "The radius of the planet as a ratio to Earth’s radius. Dictates gravity, atmospheric pressure, and the state of water on a planet.",
+      "The radius of the planet as a ratio to Earth's radius. Dictates gravity, atmospheric pressure, and the state of water on a planet.",
     units: "Earth radii (R⊕)",
     range: "0.5–1.6 R⊕",
     rationale: "Keeps gravity and pressure within a band where liquid water persists and atmospheres remain stable without crushing biospheres.",
@@ -25,7 +19,7 @@ const VARIABLE_CARDS = [
     name: "Planetary Mass",
     code: "pl_bmasse",
     description:
-      "The mass of the planet as a ratio to Earth’s mass. Determines the ability to maintain a magnetic field, terrestrial state, and maintaining an atmosphere.",
+      "The mass of the planet as a ratio to Earth's mass. Determines the ability to maintain a magnetic field, terrestrial state, and maintaining an atmosphere.",
     units: "Earth masses (M⊕)",
     range: "0.2–5 M⊕",
     rationale: "Balances tectonic activity and magnetic shielding; lighter planets lose air, heavier ones risk turning into mini-Neptunes.",
@@ -46,7 +40,7 @@ const VARIABLE_CARDS = [
       "Estimate of average temperature based on star distance and insolation. Can help to determine surface temperature and cooling or reflection.",
     units: "Kelvin (K)",
     range: "180–310 K",
-    rationale: "Anchors median surface temperatures near water’s triple point—critical for sustaining liquid reservoirs.",
+    rationale: "Anchors median surface temperatures near water's triple point—critical for sustaining liquid reservoirs.",
   },
   {
     name: "Stellar Effective Temperature",
@@ -70,44 +64,44 @@ const VARIABLE_CARDS = [
 
 const HISTOGRAMS = [
   {
-    src: "/images/our-methods/eccentric.png",
+    src: "/charts/eccentric.png",
     alt: "Histogram of orbital eccentricity values",
-    caption: "Orbital Eccentricity Distribution (pl_orbeccen)",
+    caption: "Orbital Eccentricity Distribution",
     annotation:
       "Most viable planets cluster below e = 0.1, underscoring the preference for nearly circular orbits that stabilize climate swings.",
   },
   {
-    src: "/images/our-methods/eq_temp.png",
+    src: "/charts/eq_temp.png",
     alt: "Histogram of equilibrium temperatures",
-    caption: "Equilibrium Temperature (pl_eqt)",
+    caption: "Equilibrium Temperature",
     annotation:
       "A broad peak around 240–270 K indicates temperate worlds; tails on either side illustrate the edges of the habitable comfort zone.",
   },
   {
-    src: "/images/our-methods/insolation.png",
+    src: "/charts/insolation.png",
     alt: "Histogram of stellar insolation",
-    caption: "Stellar Insolation (pl_insol)",
+    caption: "Stellar Insolation",
     annotation:
       "Energy input stays within a narrow corridor—evidence that our thresholds filter out runaway greenhouse or snowball candidates.",
   },
   {
-    src: "/images/our-methods/mass.png",
+    src: "/charts/mass.png",
     alt: "Histogram of planetary mass",
-    caption: "Planetary Mass (pl_bmasse)",
+    caption: "Planetary Mass",
     annotation:
       "The distribution favors super-Earth masses under 5 M⊕, supporting worlds heavy enough to keep atmospheres but light enough to stay rocky.",
   },
   {
-    src: "/images/our-methods/radius.png",
+    src: "/charts/radius.png",
     alt: "Histogram of planetary radius",
-    caption: "Planetary Radius (pl_rade)",
+    caption: "Planetary Radius",
     annotation:
       "A steep drop beyond 1.6 R⊕ shows where planets transition toward mini-Neptunes—our cut keeps the sample terrestrially biased.",
   },
   {
-    src: "/images/our-methods/star_teff.png",
+    src: "/charts/star_teff.png",
     alt: "Histogram of stellar effective temperatures",
-    caption: "Stellar Effective Temperature (st_teff)",
+    caption: "Stellar Effective Temperature",
     annotation:
       "Cool K- and warm G-type hosts dominate, pointing to stars that balance longevity with spectral quality.",
   },
@@ -141,136 +135,258 @@ export default function OurMethodsPage() {
 
   return (
     <TooltipProvider delayDuration={150}>
-      <main className="min-h-screen bg-[radial-gradient(ellipse_at_top,rgba(54,78,126,0.6),transparent_60%)]">
-        <div className="mx-auto w-full max-w-4xl px-6 py-10 sm:px-10 sm:py-14 lg:px-12 lg:py-16">
-          <Header />
-          <div className="mt-14 space-y-12">
-            <SectionCard
-              align="center"
-              eyebrow="Method Overview"
-              title="Our Methods"
-              description="A structured look at the filters, evidence, and datasets behind our search for Earth-like planets."
-            />
+      <main className="min-h-screen bg-[#0b1220]">
+        <Header />
 
-            <SectionCard
-              eyebrow="Key Variables"
-              title="Habitability Screening Factors"
-              description="Each threshold keeps candidate worlds inside a life-friendly band before we continue modeling."
-            >
-              <div className="grid gap-5 md:grid-cols-2">
-                {VARIABLE_CARDS.map((card) => (
-                  <StatCard key={card.code} {...card} />
-                ))}
-              </div>
-            </SectionCard>
-
-            <SectionCard
-              align="center"
-              eyebrow="Evidence &amp; Visualization"
-              title="What the Data Looks Like"
-            >
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {HISTOGRAMS.map((item) => (
-                  <ImageCard key={item.caption} {...item} />
-                ))}
-              </div>
-            </SectionCard>
-
-            {SUPPLEMENTAL_GRAPHS.length > 0 ? (
-              <SectionCard
-                align="center"
-                eyebrow="Notebook Exports"
-                title="Supplementary Graph Gallery"
-                description={(
-                  <span>
-                    These images are read directly from <code className="rounded bg-white/5 px-1.5 py-0.5 text-[0.75rem] text-white/90">/public/graphs</code>. Drop fresh renders from your notebooks to keep this appendix current.
-                  </span>
-                )}
-              >
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {SUPPLEMENTAL_GRAPHS.map((graph) => (
-                    <ImageCard key={graph.src} {...graph} />
-                  ))}
-                </div>
-              </SectionCard>
-            ) : null}
-
-            <SectionCard
-              align="center"
-              eyebrow="Public Charts"
-              title="Shared Chart Library"
-            >
-              {PUBLIC_CHARTS.length > 0 ? (
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {PUBLIC_CHARTS.map((chart) => (
-                    <ChartCard key={chart.src} {...chart} />
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.02] px-6 py-10 text-sm text-slate-300">
-                  No charts found yet. Add PNG, JPG, GIF, or WebP files to <code className="rounded bg-white/5 px-1.5 py-0.5 text-[0.75rem] text-white/90">/public/charts</code> and they will appear here automatically.
-                </div>
-              )}
-            </SectionCard>
-
-            <SectionCard eyebrow="Ground Rules" title="Our Screening Rules">
-              <RuleTable rows={RULE_ROWS} />
-            </SectionCard>
-
-            <SectionCard align="center" eyebrow="Take the Next Step" title="Ready to Dive Deeper?">
-              <CtaRow hasSelectedCsv={hasSelectedCsv} hasRawCsv={hasRawCsv} />
-            </SectionCard>
+        {/* Hero Section - Page Header */}
+        <section className="border-b border-white/5 pt-24 pb-16 sm:pt-32 sm:pb-20">
+          <div className="mx-auto max-w-4xl px-6 text-center">
+            <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-indigo-400">
+              Our Methodology
+            </p>
+            <h1 className="mb-6 text-5xl font-bold tracking-tight text-white sm:text-6xl md:text-7xl">
+              Our Methods
+            </h1>
+            <p className="mx-auto max-w-2xl text-xl leading-relaxed text-slate-300 sm:text-2xl">
+              A rigorous, data-driven approach to identifying potentially habitable exoplanets
+            </p>
           </div>
-        </div>
+        </section>
+
+        {/* Overview Section */}
+        <section className="border-b border-white/5 py-16 sm:py-20">
+          <div className="mx-auto max-w-3xl px-6">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="mb-6 text-3xl font-bold text-white sm:text-4xl">
+                Systematic Screening Process
+              </h2>
+              <p className="text-lg leading-relaxed text-slate-300">
+                We employ a systematic screening process based on six critical parameters that determine 
+                a planet's potential to support life. Each threshold is carefully calibrated to identify 
+                worlds within the habitable zone—where liquid water could exist and conditions might be 
+                suitable for life as we know it.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Variables Section - Main Content */}
+        <section className="border-b border-white/5 py-20 sm:py-28">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="mb-16 text-center">
+              <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-indigo-400">
+                Part 1: Screening Criteria
+              </p>
+              <h2 className="mb-6 text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
+                Six Key Variables
+              </h2>
+              <p className="mx-auto max-w-2xl text-lg leading-relaxed text-slate-300">
+                Each parameter plays a crucial role in determining planetary habitability. These thresholds 
+                filter our dataset to identify the most promising candidates.
+              </p>
+            </div>
+            <div className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {VARIABLE_CARDS.map((card) => (
+                <ModernStatCard key={card.code} {...card} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Data Visualization Section - Constrained Images */}
+        <section className="border-b border-white/5 py-20 sm:py-28">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="mb-16 text-center">
+              <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-indigo-400">
+                Part 2: Data Analysis
+              </p>
+              <h2 className="mb-6 text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
+                Distribution Patterns
+              </h2>
+              <p className="mx-auto max-w-2xl text-lg leading-relaxed text-slate-300">
+                These histograms reveal how our screening thresholds shape the dataset. Each chart 
+                illustrates the distribution of a key variable across filtered planets.
+              </p>
+            </div>
+            <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {HISTOGRAMS.map((item) => (
+                <ImageCardWithError key={item.caption} {...item} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Screening Results Section - Before Supplemental Content */}
+        <section className="border-b border-white/5 py-20 sm:py-28">
+          <div className="mx-auto max-w-5xl px-6">
+            <div className="mb-12 text-center">
+              <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-indigo-400">
+                Part 3: Results
+              </p>
+              <h2 className="mb-6 text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
+                Screening Results
+              </h2>
+              <p className="mx-auto max-w-2xl text-lg leading-relaxed text-slate-300">
+                Statistics showing how many planets pass or fail each screening criterion. A planet must 
+                meet all thresholds to be considered potentially habitable.
+              </p>
+            </div>
+            <ModernRuleTable rows={RULE_ROWS} />
+          </div>
+        </section>
+
+        {/* Supplemental Graphs - Secondary Content */}
+        {SUPPLEMENTAL_GRAPHS.length > 0 && (
+          <section className="border-b border-white/5 py-20 sm:py-28 bg-white/[0.01]">
+            <div className="mx-auto max-w-7xl px-6">
+              <div className="mb-12 text-center">
+                <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-slate-400">
+                  Extended Analysis
+                </p>
+                <h2 className="mb-6 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  Supplementary Visualizations
+                </h2>
+                <p className="mx-auto max-w-2xl text-base leading-relaxed text-slate-400">
+                  Additional analysis and notebook exports providing deeper insights into our methodology.
+                </p>
+              </div>
+              <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {SUPPLEMENTAL_GRAPHS.map((graph) => (
+                  <ImageCardWithError key={graph.src} {...graph} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Public Charts - Tertiary Content */}
+        {PUBLIC_CHARTS.length > 0 && (
+          <section className="border-b border-white/5 py-20 sm:py-28 bg-white/[0.01]">
+            <div className="mx-auto max-w-7xl px-6">
+              <div className="mb-12 text-center">
+                <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-slate-400">
+                  Resources
+                </p>
+                <h2 className="mb-6 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  Shared Chart Library
+                </h2>
+                <p className="mx-auto max-w-2xl text-base leading-relaxed text-slate-400">
+                  Additional visualizations available for exploration and analysis.
+                </p>
+              </div>
+              <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {PUBLIC_CHARTS.map((chart) => (
+                  <ImageCardWithError key={chart.src} {...chart} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* CTA Section - Final Action */}
+        <section className="py-20 sm:py-28">
+          <div className="mx-auto max-w-4xl px-6">
+            <div className="mb-12 text-center">
+              <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-indigo-400">
+                Explore Further
+              </p>
+              <h2 className="mb-6 text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
+                Ready to Dive Deeper?
+              </h2>
+              <p className="mx-auto max-w-2xl text-lg leading-relaxed text-slate-300">
+                Explore our curated planet collection or download the datasets to conduct your own analysis.
+              </p>
+            </div>
+            <div className="mt-12">
+              <CtaRow hasSelectedCsv={hasSelectedCsv} hasRawCsv={hasRawCsv} />
+            </div>
+          </div>
+        </section>
       </main>
     </TooltipProvider>
   );
 }
 
-type SectionCardProps = {
-  eyebrow?: string;
-  title?: string;
-  description?: ReactNode;
-  align?: "start" | "center";
-  className?: string;
-  contentClassName?: string;
-  children?: ReactNode;
-};
-
-function SectionCard({
-  eyebrow,
-  title,
+// Modern Stat Card Component
+function ModernStatCard({
+  name,
+  code,
   description,
-  align = "start",
-  className,
-  contentClassName,
-  children,
-}: SectionCardProps) {
-  const hasContent = children !== undefined && children !== null;
-  const headerAlignment = align === "center" ? "items-center text-center" : "text-left";
-  const descriptionAlignment = align === "center" ? "mx-auto max-w-2xl text-center" : undefined;
-
+  units,
+  range,
+  rationale,
+}: {
+  name: string;
+  code: string;
+  description: string;
+  units: string;
+  range: string;
+  rationale: string;
+}) {
   return (
-    <section className={className}>
-      <Card className="border-white/15 bg-white/[0.035] shadow-[0_30px_80px_rgba(15,23,42,0.35)] backdrop-blur-xl">
-        <CardHeader className={cn("space-y-3 sm:p-6", headerAlignment)}>
-          {eyebrow ? (
-            <p className="text-xs uppercase tracking-[0.35em] text-indigo-200">{eyebrow}</p>
-          ) : null}
-          {title ? (
-            <h2 className="text-2xl font-semibold text-white sm:text-[1.85rem]">{title}</h2>
-          ) : null}
-          {description ? (
-            <p className={cn("text-sm leading-relaxed text-slate-300", descriptionAlignment)}>{description}</p>
-          ) : null}
-        </CardHeader>
-        {hasContent ? (
-          <CardContent className={cn("space-y-6 pt-0 sm:px-6 sm:pb-6", contentClassName)}>
-            {children}
-          </CardContent>
-        ) : null}
-      </Card>
-    </section>
+    <div className="group relative overflow-hidden rounded-2xl bg-white/[0.02] p-6 text-center transition-all duration-300 hover:bg-white/[0.04] hover:shadow-xl border border-white/5">
+      <div className="mb-4">
+        <span className="inline-block rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-indigo-300">
+          {code}
+        </span>
+      </div>
+      <h3 className="mb-3 text-xl font-bold text-white">{name}</h3>
+      <p className="mb-6 text-sm leading-relaxed text-slate-300">{description}</p>
+      <div className="space-y-3 border-t border-white/10 pt-4">
+        <div className="flex items-center justify-between text-sm">
+          <span className="font-medium text-slate-400">Units</span>
+          <span className="font-semibold text-white">{units}</span>
+        </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="font-medium text-slate-400">Range</span>
+          <span className="font-semibold text-indigo-300">{range}</span>
+        </div>
+      </div>
+      <div className="mt-4">
+        <p className="text-xs leading-relaxed text-slate-400">{rationale}</p>
+      </div>
+    </div>
+  );
+}
+
+// Modern Rule Table Component
+function ModernRuleTable({ rows }: { rows: typeof RULE_ROWS }) {
+  return (
+    <div className="overflow-hidden rounded-2xl bg-white/[0.02] border border-white/5 transition-all duration-300 hover:bg-white/[0.03] hover:shadow-lg">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-white/10">
+              <th className="px-6 py-5 text-center text-sm font-semibold uppercase tracking-wider text-slate-300">
+                Variable
+              </th>
+              <th className="px-6 py-5 text-center text-sm font-semibold uppercase tracking-wider text-slate-300">
+                Pass
+              </th>
+              <th className="px-6 py-5 text-center text-sm font-semibold uppercase tracking-wider text-slate-300">
+                Fail
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/5">
+            {rows.map((row, idx) => (
+              <tr
+                key={row.variable}
+                className="transition-colors duration-200 hover:bg-white/[0.02]"
+              >
+                <td className="px-6 py-5 text-center text-base font-medium text-white">{row.variable}</td>
+                <td className="px-6 py-5 text-center text-base font-semibold text-emerald-400">
+                  {row.pass}
+                </td>
+                <td className="px-6 py-5 text-center text-base font-medium text-rose-400">
+                  {row.fail}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 

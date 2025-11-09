@@ -222,70 +222,99 @@ export default function BackgroundPage() {
 
   return (
     <main className="min-h-screen bg-[#0b1220]">
-      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-10 xl:max-w-[66vw] pt-0 space-y-12">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 xl:px-12 pt-8 pb-16">
         <Header />
 
         {/* Data visualization: Spider (Radar) Graph */}
-  <section id="visualizations" className="space-y-6 text-center scroll-mt-24 max-w-4xl mx-auto pt-20 sm:pt-24 md:pt-28">
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center">Data Visualizations</h2>
-          <div className="max-w-4xl mx-auto rounded-2xl bg-white/5 p-6 space-y-4">
-            {planetItems.length > 0 ? (
-              <PlanetRadarExplorer items={planetItems} initialSelected={planetTitle} />
-            ) : (
-              <>
-                {radarData ? (
-                  <SpiderRadar title={planetTitle} data={radarData} />
-                ) : (
-                  <div className="aspect-[16/9] grid place-items-center rounded-xl bg-white/5">
-                    <span className="text-slate-400">Spider graph unavailable ({errorReason ?? "unknown reason"}).</span>
-                  </div>
-                )}
-              </>
-            )}
-            <div className="prose prose-invert max-w-prose mx-auto">
-              <p className="text-sm text-slate-400">
-                The menu places planets by similarity to Earth (closer = more similar). Radar axes show absolute
-                normalized difference from Earth’s value; smaller radius = more Earth‑like.
-              </p>
+        <section id="visualizations" className="scroll-mt-24 pt-20 sm:pt-24 md:pt-28">
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-4">
+                Data Visualizations
+              </h2>
+            </div>
+            <div className="rounded-2xl bg-white/5 border border-white/10 p-6 sm:p-8 space-y-6">
+              {planetItems.length > 0 ? (
+                <PlanetRadarExplorer items={planetItems} initialSelected={planetTitle} />
+              ) : (
+                <>
+                  {radarData ? (
+                    <SpiderRadar title={planetTitle} data={radarData} />
+                  ) : (
+                    <div className="aspect-[16/9] grid place-items-center rounded-xl bg-white/5 border border-white/10">
+                      <span className="text-slate-300 text-base">
+                        Spider graph unavailable ({errorReason ?? "unknown reason"}).
+                      </span>
+                    </div>
+                  )}
+                </>
+              )}
+              <div className="max-w-3xl mx-auto pt-4">
+                <p className="text-base text-slate-300 leading-7">
+                  The interactive menu places planets by similarity to Earth—planets closer to the center are more similar to our home world. 
+                  The radar chart axes show the absolute normalized difference from Earth's values; a smaller radius indicates a more Earth-like planet 
+                  across the measured characteristics.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Density Distribution */}
-        <section id="density" className="space-y-6 text-center scroll-mt-24 max-w-4xl mx-auto pt-24 sm:pt-28 lg:pt-40">
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center mt-8">
-            Planet Density Distribution
-          </h2>
-          <div className="max-w-4xl mx-auto rounded-2xl bg-white/5 p-6 space-y-4">
-            {densitySeries.terrestrial.length + densitySeries.gaseous.length > 0 ? (
-              <DensityHistogramPlotly terrestrial={densitySeries.terrestrial} gaseous={densitySeries.gaseous} />
-            ) : (
-              <div className="aspect-[16/9] grid place-items-center rounded-xl bg-white/5">
-                <span className="text-slate-400">Density histogram unavailable ({errorReason ?? "unknown reason"}).</span>
+        <section id="density" className="scroll-mt-24 pt-20 sm:pt-24 md:pt-28">
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-4">
+                Planet Density Distribution
+              </h2>
+            </div>
+            <div className="rounded-2xl bg-white/5 border border-white/10 p-6 sm:p-8 space-y-6">
+              {densitySeries.terrestrial.length + densitySeries.gaseous.length > 0 ? (
+                <DensityHistogramPlotly terrestrial={densitySeries.terrestrial} gaseous={densitySeries.gaseous} />
+              ) : (
+                <div className="aspect-[16/9] grid place-items-center rounded-xl bg-white/5 border border-white/10">
+                  <span className="text-slate-300 text-base">
+                    Density histogram unavailable ({errorReason ?? "unknown reason"}).
+                  </span>
+                </div>
+              )}
+              <div className="max-w-3xl mx-auto pt-4">
+                <p className="text-base text-slate-300 leading-7">
+                  Planet densities are computed from reported mass and radius measurements. We classify planets with 
+                  density ≥ 3 g/cm³ as <span className="text-amber-400 font-medium">terrestrial</span> and those below 
+                  as <span className="text-blue-400 font-medium">gaseous</span>. The overlapping bars show the distribution 
+                  for each classification, helping us understand the composition diversity of exoplanets in our dataset.
+                </p>
               </div>
-            )}
-            <div className="prose prose-invert max-w-prose mx-auto">
-              <p className="text-sm text-slate-400">
-                Densities are computed from reported mass and radius. We classify planets with density ≥ 3 g/cm³ as
-                terrestrial and below as gaseous. Bars overlay to show distribution per class.
-              </p>
             </div>
           </div>
         </section>
 
         {/* Featured Planets Row */}
-        <section id="featured" className="space-y-6 text-center scroll-mt-24 max-w-5xl mx-auto pt-24 sm:pt-28 lg:pt-40">
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center mt-8">
-            Potential Habitable Planets
-          </h2>
-          <div className="max-w-5xl mx-auto rounded-2xl bg-white/5 p-4">
-            {featuredProfiles.length > 0 ? (
-              <FeaturedPlanetsRow profiles={featuredProfiles as any} />
-            ) : (
-              <div className="grid place-items-center py-10 text-slate-400">
-                Add the curated CSV at <code className="text-slate-200">/public/data/selected_planets_full.csv</code> to show featured planets.
-              </div>
-            )}
+        <section id="featured" className="scroll-mt-24 pt-20 sm:pt-24 md:pt-28">
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white mb-4">
+                Potential Habitable Planets
+              </h2>
+              <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                Explore our curated selection of exoplanets that show promise for habitability based on our screening criteria.
+              </p>
+            </div>
+            <div className="rounded-2xl bg-white/5 border border-white/10 p-6 sm:p-8">
+              {featuredProfiles.length > 0 ? (
+                <FeaturedPlanetsRow profiles={featuredProfiles as any} />
+              ) : (
+                <div className="grid place-items-center py-12 text-center">
+                  <p className="text-slate-300 text-base mb-2">
+                    No featured planets data available.
+                  </p>
+                  <p className="text-slate-400 text-sm">
+                    Add the curated CSV at <code className="px-2 py-1 rounded bg-white/10 text-slate-200 font-mono text-xs">/public/data/selected_planets_full.csv</code> to display featured planets.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </section>
       </div>

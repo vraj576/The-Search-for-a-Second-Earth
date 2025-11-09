@@ -144,10 +144,11 @@ export default function PlanetRadarExplorer({ items, initialSelected }: Props) {
             <span className="text-slate-400">Select a planet to view details</span>
           </div>
         )}
-        <div className="text-xs text-slate-400 text-left">
+        <div className="text-sm text-slate-300 text-left leading-6">
           <p>
-            Distance from Earth in the left menu reflects similarity to Earth across Radius, Mass, Insolation,
-            Equilibrium Temp, Stellar Teff, and Eccentricity.
+            Distance from Earth in the radial menu reflects overall similarity across all measured characteristics: 
+            Radius, Mass, Insolation, Equilibrium Temperature, Stellar Effective Temperature, and Orbital Eccentricity. 
+            Planets closer to the center are more Earth-like.
           </p>
         </div>
       </div>
